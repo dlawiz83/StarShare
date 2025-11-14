@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "StarShare",
+  "version": "1.0",
+  "description": "Gamified coding companion",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.replit.com/*", "*://*.leetcode.com/*", "*://colab.research.google.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
