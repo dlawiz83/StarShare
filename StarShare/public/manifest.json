@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "StarShare",
+  "name": "StudyBuddy",
   "version": "1.0.0",
   "description": "Study Buddy, XP, levels and cosmetics on coding sites.",
 
   "action": {
     "default_popup": "index.html",
-    "default_title": "StarShare"
+    "default_title": "StudyBuddy"
   },
 
   "permissions": [

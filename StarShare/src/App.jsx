@@ -42,7 +42,7 @@ export default function App() {
     <div className="w-80 p-4 font-sans space-y-4 bg-gradient-to-b from-purple-600 to-indigo-700 min-h-[400px] text-white rounded-xl shadow-xl">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">⭐ StarShare</h2>
+        <h2 className="text-xl font-bold">StudyBuddy</h2>
         <div className="px-2 py-1 rounded-lg bg-white/20 text-xs">
           Lv. {lvl}
         </div>
