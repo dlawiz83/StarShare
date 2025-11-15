@@ -1,7 +1,7 @@
-# ⭐ StarShare – Chrome Extension
+# StudyBuddy – Chrome Extension
 ### _Turn your coding time into XP, levels, and fun._
 
-StarShare is a Chrome extension built for a hackathon MVP that gamifies learning.  
+StudyBuddy is a Chrome extension built for a hackathon MVP that gamifies learning.  
 It tracks your coding activity across major learning platforms and rewards you with XP, levels, and a friendly floating buddy.
 
 ---
@@ -49,7 +49,7 @@ Works on major learning platforms:
 The extension injects a friendly “buddy” onto supported sites.  
 It detects actions like **Run** and **Submit**, tracks coding activity, and awards XP in real time using `chrome.storage.sync`.
 
-A popup UI (coming soon) will show:
+A popup UI will show:
 - XP bar  
 - Level  
 - Buddy cosmetics  
@@ -90,7 +90,7 @@ A popup UI (coming soon) will show:
 ---
 
 ## 👥 Team
-- Ayesha Dawodi — XP System, Multi-Site Detection, Floating Buddy, UI/UX, Core Logic
+- Ayesha Dawodi — **built the core backend and frontend logic for the MVP**, XP System, Multi-Site Detection, Floating Buddy, UI/UX, and
 (implemented XP tracking, Run button detection, multi-site support, floating buddy interactions, and designed/built the full extension UI/UX)
 - **Alexander Nguyen - Gitbook documentation lead**
   (Make accessible and easy to read pages, record visuals for future reference)
@@ -100,11 +100,6 @@ A popup UI (coming soon) will show:
 
 ---
 
-##  Hackathon Notes
-This is an MVP build focused on core logic.  
-UI animations, cosmetics, and polish will be added in the next phase.
-
----
 
 
 
