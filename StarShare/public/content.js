@@ -4,6 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const XP_FOCUS = 15;
   const FOCUS_INTERVAL = 300;
 
+  //  XP rules
+  const XP_ENTER_SITE = 10;       // When user enters site
+  const XP_ACTIVE_INTERVAL = 30;  // Seconds per XP tick
+  const XP_ACTIVE_REWARD = 5;     // XP per active interval
+  const XP_5_MIN = 25;            // Bonus after 5 minutes (300 seconds)
+
+  let siteEntered = false;
+  let totalActiveSeconds = 0;
 
   function injectBuddy() {
     if (document.getElementById("starshare-buddy")) return;
@@ -32,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   injectBuddy();
 
-  // Toast 
+  // Toast
   function showToast(text) {
     const t = document.createElement("div");
     t.textContent = text;
@@ -55,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => t.remove(), 1500);
   }
 
-  // XP System 
+  // XP System
   function addXP(amount) {
     chrome.storage.sync.get({ xp: 0 }, (res) => {
       const newXP = res.xp + amount;
@@ -67,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Run Button Detection
   function bindRunButtons() {
-   
     const selectors = [
       "button",
       "input[type='button']",
@@ -94,14 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // detect initial buttons
   bindRunButtons();
 
-  // observe dynamic pages
   const observer = new MutationObserver(() => bindRunButtons());
   observer.observe(document.body, { childList: true, subtree: true });
 
-  //Focus XP 
+  // Focus XP
   let activeSeconds = 0;
   setInterval(() => {
     if (document.visibilityState === "visible") activeSeconds++;
@@ -110,18 +115,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, 1000);
 
-  // Completion XP 
+  // Completion XP
   function detectProblemCompletion() {
     const successWords = ["accepted", "all tests passed", "congratulations"];
     const text = document.body.innerText.toLowerCase();
 
     if (!document.body.dataset.starshareCompleted &&
-        successWords.some(s => text.includes(s))) {
+      successWords.some(s => text.includes(s))) {
       document.body.dataset.starshareCompleted = "1";
       addXP(25);
     }
   }
 
   setInterval(detectProblemCompletion, 2000);
+
+  // XP When Entering Site
+
+  if (!siteEntered) {
+    siteEntered = true;
+    addXP(XP_ENTER_SITE);
+  }
+
+
+  // XP Every 30 Seconds of Active Use
+
+  let intervalCounter = 0;
+
+  setInterval(() => {
+    if (document.visibilityState === "visible") {
+      intervalCounter++;
+      totalActiveSeconds++;
+
+      // Every 30s -> +5 XP
+      if (intervalCounter % XP_ACTIVE_INTERVAL === 0) {
+        addXP(XP_ACTIVE_REWARD);
+      }
+
+      // After 5 minutes -> +25 XP bonus
+      if (totalActiveSeconds === 300) {
+        addXP(XP_5_MIN);
+      }
+    }
+  }, 1000);
 
 });

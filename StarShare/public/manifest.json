@@ -23,19 +23,39 @@
     "https://leetcode.com/*",
     "https://*.leetcode.com/*",
     "https://colab.research.google.com/*",
-    "https://*.codingbat.com/*"
+    "https://*.codingbat.com/*",
+
+     "https://*.w3schools.com/*",
+      "https://*.edx.org/*",
+"https://*.coursera.org/*"
+,
+      "https://www.khanacademy.org/*",
+      "https://www.freecodecamp.org/*",
+      "https://www.geeksforgeeks.org/*",
+      "https://www.codecademy.com/",
+      "https://learn.microsoft.com/*",
+      "https://developer.mozilla.org/*"
   ],
 
-  "content_scripts": [
-    {
-      "matches": [
-        "https://replit.com/*",
-        "https://*.replit.com/*",
-        "https://leetcode.com/*",
-        "https://*.leetcode.com/*",
-        "https://colab.research.google.com/*",
-        "https://*.codingbat.com/*"
-      ],
+"content_scripts": [
+  {
+    "matches": [
+      "*://*.replit.com/*",
+      "*://leetcode.com/*",
+      "*://*.leetcode.com/*",
+      "*://colab.research.google.com/*",
+      "*://*.codingbat.com/*",
+
+      "*://*.edx.org/*",
+      "*://*.coursera.org/*",
+      "*://*.codecademy.com/*",
+      "*://www.khanacademy.org/*",
+      "*://www.freecodecamp.org/*",
+      "*://www.geeksforgeeks.org/*",
+      "*://*.w3schools.com/*",
+      "*://learn.microsoft.com/*",
+      "*://developer.mozilla.org/*"
+    ],
       "js": ["content.js"],
       "run_at": "document_start",
       "all_frames": true
