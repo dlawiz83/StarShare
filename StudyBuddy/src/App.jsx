@@ -12,9 +12,24 @@ export default function App() {
   const [selected, setSelected] = useState("default");
 
   const cosmetics = [
-    { id: "default", name: "Classic Pink", level: 0 },
-    { id: "purple", name: "Purple Dream", level: 5 },
-    { id: "galaxy", name: "Galaxy Star", level: 10 },
+    {
+      id: "default",
+      name: "Blue Buddy",
+      level: 0,
+      colors: ["#bfdbfe", "#93c5fd"],
+    },
+    {
+      id: "purple",
+      name: "Purple Dream",
+      level: 5,
+      colors: ["#c4b5fd", "#a78bfa"],
+    },
+    {
+      id: "galaxy",
+      name: "Galaxy Star",
+      level: 10,
+      colors: ["#818cf8", "#60a5fa"],
+    },
   ];
 
   useEffect(() => {
@@ -24,8 +39,25 @@ export default function App() {
     });
 
     const listener = (changes) => {
-      if (changes.xp) setXp(changes.xp.newValue || 0);
+      if (changes.xp) {
+        const newXp = changes.xp.newValue || 0;
+        setXp(newXp);
+
+        const newLevel = levelFromXP(newXp);
+
+        // Auto-unlock & auto-select cosmetics based on new level
+        const unlocked = cosmetics
+          .filter((c) => newLevel >= c.level)
+          .map((c) => c.id);
+
+        if (!unlocked.includes(selected)) {
+          const highestUnlocked = unlocked[unlocked.length - 1];
+          chrome.storage.sync.set({ skin: highestUnlocked });
+          setSelected(highestUnlocked);
+        }
+      }
     };
+
     chrome.storage.onChanged.addListener(listener);
     return () => chrome.storage.onChanged.removeListener(listener);
   }, []);
@@ -38,82 +70,87 @@ export default function App() {
     setSelected(id);
   };
 
+  const currentSkin = cosmetics.find((c) => c.id === selected);
+  const [c1, c2] = currentSkin.colors;
+
   return (
-    <div className="w-80 p-4 font-sans space-y-4 bg-gradient-to-b from-purple-600 to-indigo-700 min-h-[400px] text-white rounded-xl shadow-xl">
+    <div
+      className="w-80 p-4 font-sans space-y-4 text-gray-900 min-h-[400px] rounded-xl shadow-xl"
+      style={{
+        background: `linear-gradient(to bottom, ${c1}, ${c2})`,
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold">StudyBuddy</h2>
-        <div className="px-2 py-1 rounded-lg bg-white/20 text-xs">
+        <div className="px-2 py-1 rounded-lg bg-white/40 text-xs font-medium">
           Lv. {lvl}
         </div>
       </div>
 
       {/* Buddy Preview Card */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center shadow-lg">
-        <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl">
-          🐣
+      <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center shadow-lg">
+        <div className="w-20 h-20 rounded-full bg-white/40 flex items-center justify-center text-3xl">
+          {selected === "default" && "🐦"}
+          {selected === "purple" && "🪄"}
+          {selected === "galaxy" && "🌌"}
         </div>
 
-        <p className="mt-2 text-sm text-purple-200">
-          {selected === "default" && "Classic Pink Buddy"}
-          {selected === "purple" && "Purple Dream Buddy"}
-          {selected === "galaxy" && "Galaxy Star Buddy"}
-        </p>
+        <p className="mt-2 text-sm text-gray-600">{currentSkin.name}</p>
       </div>
 
       {/* XP Bar */}
-      <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-lg">
-        <div className="text-sm text-purple-200">Level {lvl}</div>
+      <div className="bg-white/40 backdrop-blur-md p-4 rounded-2xl shadow-lg">
+        <div className="text-sm text-gray-700 font-medium">Level {lvl}</div>
 
-        <div className="h-3 bg-purple-900/40 rounded-xl mt-2 overflow-hidden">
+        <div className="h-3 bg-white/50 rounded-xl mt-2 overflow-hidden">
           <div
             className="h-full rounded-xl transition-all"
             style={{
               width: `${prog}%`,
-              background: "linear-gradient(90deg, #f472b6, #c084fc, #818cf8)",
+              background: `linear-gradient(90deg, ${c1}, ${c2})`,
             }}
           />
         </div>
 
-        <div className="text-xs text-purple-200 mt-1">
+        <div className="text-xs text-gray-600 mt-1">
           {xp} XP • {prog}/100
         </div>
       </div>
 
       {/* Cosmetics Selection */}
-      <div className="bg-white/10 p-4 backdrop-blur-md rounded-2xl shadow-lg">
-        <h3 className="text-sm text-purple-100 mb-2 font-medium">Cosmetics</h3>
+      <div className="bg-white/40 p-4 backdrop-blur-md rounded-2xl shadow-lg">
+        <h3 className="text-sm text-gray-700 mb-2 font-medium">Cosmetics</h3>
 
         <div className="grid grid-cols-3 gap-3">
           {cosmetics.map((c) => {
             const locked = lvl < c.level;
-
             return (
               <button
                 key={c.id}
                 onClick={() => !locked && handleSelect(c.id)}
                 className={`
-                  p-2 rounded-xl text-xs text-center transition-all border border-white/20
+                  p-2 rounded-xl text-xs text-center border
                   ${
                     selected === c.id
-                      ? "ring-2 ring-pink-300 bg-white/20"
-                      : "bg-white/10"
+                      ? "ring-2 ring-white/80 bg-white/60"
+                      : "bg-white/40"
                   }
                   ${
                     locked
                       ? "opacity-40 cursor-not-allowed"
-                      : "hover:bg-white/20"
+                      : "hover:bg-white/60"
                   }
                 `}
               >
                 <div className="text-base">
-                  {c.id === "default" && "🐣"}
+                  {c.id === "default" && "🐦"}
                   {c.id === "purple" && "🪄"}
                   {c.id === "galaxy" && "🌌"}
                 </div>
-                <div>{c.name}</div>
+                <div className="text-gray-700">{c.name}</div>
                 {locked && (
-                  <div className="text-[10px] text-red-300">Lv {c.level}</div>
+                  <div className="text-[10px] text-red-500">Lv {c.level}</div>
                 )}
               </button>
             );
@@ -123,7 +160,7 @@ export default function App() {
 
       {/* Reset Button */}
       <button
-        className="w-full py-2 rounded-xl bg-white/20 hover:bg-white/30 text-sm font-medium transition"
+        className="w-full py-2 rounded-xl bg-white/40 hover:bg-white/60 text-sm font-medium transition"
         onClick={() => chrome.storage.sync.set({ xp: 0 })}
       >
         Reset XP
